@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Tasty Haven Admin Dashboard</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 20px;
+            background: #080f1c;
+            color: white;
+            font-family: Arial, sans-serif;
+        }
+
+        h1 {
+            text-align: center;
+            color: #d4af37;
+            margin-bottom: 30px;
+        }
+
+        h2 {
+            color: #d4af37;
+        }
+
+        .box {
+            background: #101827;
+            border: 1px solid #d4af37;
+            border-radius: 15px;
+            padding: 25px;
+            margin: 20px auto;
+            max-width: 850px;
+        }
+
+        input {
+            display: block;
+            width: 100%;
+            padding: 14px;
+            margin: 15px 0;
+            border-radius: 8px;
+            border: 1px solid #d4af37;
+            background: #1c293b;
+            color: white;
+            font-size: 16px;
+        }
+
+        button {
+            display: inline-block;
+            padding: 12px 20px;
+            margin: 8px 5px 8px 0;
+            background: #d4af37;
+            color: #080f1c;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 15px;
+            cursor: pointer;
+            position: relative;
+            z-index: 10;
+        }
+
+        button:hover {
+            background: #f0ce62;
+        }
+
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .card {
+            background: #1c293b;
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 12px;
+            border: 1px solid #d4af37;
+            overflow-wrap: anywhere;
+        }
+
+        .card p {
+            line-height: 1.6;
+        }
+
+        select {
+            padding: 10px;
+            margin: 8px 0;
+            border-radius: 6px;
+            background: white;
+            color: black;
+        }
+
+        #message {
+            color: #ff7777;
+            font-weight: bold;
+        }
+
+        .success {
+            color: #70e090;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+    <h1>🍽️ TASTY HAVEN ADMIN</h1>
+
+
+    <!-- ADMIN LOGIN -->
+
+    <div class="box" id="loginSection">
+
+        <h2>Admin Login</h2>
+
+        <input
+            type="email"
+            id="adminEmail"
+            placeholder="Admin Email"
+        >
+
+        <input
+            type="password"
+            id="adminPassword"
+            placeholder="Admin Password"
+        >
+
+        <button type="button" id="loginButton">
+            Login
+        </button>
+
+        <p id="message"></p>
+
+    </div>
+
+
+    <!-- ADMIN DASHBOARD -->
+
+    <div id="dashboard" class="hidden">
+
+        <div class="box">
+
+            <h2>Customer Orders</h2>
+
+            <div id="ordersList">
+                Loading orders...
+            </div>
+
+        </div>
+
+
+        <div class="box">
+
+            <h2>Table Reservations</h2>
+
+            <div id="reservationsList">
+                Loading reservations...
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- FIREBASE JAVASCRIPT -->
+
+    <script type="module">
+
+        import { db, auth } from "./firebase.js";
+
+        import {
+            signInWithEmailAndPassword,
+            signOut
+        } from "https://www.gstatic.com/firebasejs/13.4.0/firebase-auth.js";
+
+        import {
+            collection,
+            getDocs,
+            doc,
+            updateDoc
+        } from "https://www.gstatic.com/firebasejs/13.4.0/firebase-firestore.js";
+
+
+        const ADMIN_UID = "YCa8O0lX0JgPIb6G0QbBEmfHoSr1";
+
+
+        // GET HTML ELEMENTS
+
+        const loginButton = document.getElementById("loginButton");
+
+        const loginSection = document.getElementById("loginSection");
+
+        const dashboard = document.getElementById("dashboard");
+
+        const message = document.getElementById("message");
+
+
+        console.log("Tasty Haven Admin JavaScript is running.");
+
+        console.log("Login button:", loginButton);
+
+
+        // ADMIN LOGIN
+
+        loginButton.addEventListener("click", async function() {
+
+            const email = document.getElementById("adminEmail").value.trim();
+
+            const password = document.getElementById("adminPassword").value;
+
+            if (!email || !password) {
+                message.textContent = "Please enter your email and password.";
+                return;
+            }
+
+            loginButton.disabled = true;
+
+            loginButton.textContent = "Logging in...";
+
+            message.textContent = "";
+
+            try {
+
+                const result = await signInWithEmailAndPassword(
+                    auth,
+                    email,
+                    password
+                );
+
+
+                if (result.user.uid !== ADMIN_UID) {
+
+                    await signOut(auth);
+
+                    message.textContent = "Access denied. Admin account required.";
+
+                    return;
+
+                }
+
+
+                // SHOW DASHBOARD
+
+                loginSection.classList.add("hidden");
+
+                dashboard.classList.remove("hidden");
+
+
+                // LOAD BOTH SECTIONS
+
+                await loadOrders();
+
+                await loadReservations();
+
+
+            } catch (error) {
+
+                console.error("ADMIN LOGIN ERROR:", error);
+
+                message.textContent =
+                    "Login failed: " + error.message;
+
+            } finally {
+
+                loginButton.disabled = false;
+
+                loginButton.textContent = "Login";
+
+            }
+
+        });
+
+
+        // LOAD TABLE RESERVATIONS
+
+        async function loadReservations() {
+
+            const reservationsList =
+                document.getElementById("reservationsList");
+
+            reservationsList.textContent = "Loading reservations...";
+
+            try {
+
+                const snapshot = await getDocs(
+                    collection(db, "reservations")
+                );
+
+                reservationsList.replaceChildren();
+
+
+                if (snapshot.empty) {
+
+                    reservationsList.textContent = "No reservations yet.";
+
+                    return;
+
+                }
+
+
+                snapshot.forEach(reservationDocument => {
+
+                    const reservation = reservationDocument.data();
+
+                    const card = document.createElement("div");
+
+                    card.className = "card";
+
+
+                    const details = document.createElement("p");
+
+                    details.textContent =
+                        "Booking ID: " + reservationDocument.id +
+                        " | Name: " + reservation.name +
+                        " | Phone: " + reservation.phone +
+                        " | Date: " + reservation.date +
+                        " | Time: " + reservation.time +
+                        " | Guests: " + reservation.guests +
+                        " | Status: " + (reservation.status || "Pending");
+
+
+                    const confirmButton = document.createElement("button");
+
+                    confirmButton.textContent = "Confirm Reservation";
+
+
+                    const declineButton = document.createElement("button");
+
+                    declineButton.textContent = "Decline Reservation";
+
+
+                    // CONFIRM RESERVATION
+
+                    confirmButton.addEventListener("click", async function() {
+
+                        try {
+
+                            await updateDoc(
+                                doc(db, "reservations", reservationDocument.id),
+                                {
+                                    status: "Confirmed"
+                                }
+                            );
+
+                            alert("✅ SUCCESS!\n\nReservation confirmed successfully.\n\nThe reservation status is now CONFIRMED.");
+
+                            await loadReservations();
+
+                        } catch (error) {
+
+                            console.error(error);
+
+                            alert("Could not confirm reservation.");
+
+                        }
+
+                    });
+
+
+                    // DECLINE RESERVATION
+
+                    declineButton.addEventListener("click", async function() {
+
+                        try {
+
+                            await updateDoc(
+                                doc(db, "reservations", reservationDocument.id),
+                                {
+                                    status: "Declined"
+                                }
+                            );
+
+                            alert("❌ RESERVATION DECLINED!\n\nThe reservation has been successfully declined.");
+
+                            await loadReservations();
+
+                        } catch (error) {
+
+                            console.error(error);
+
+                            alert("Could not decline reservation.");
+
+                        }
+
+                    });
+
+
+                    card.append(
+                        details,
+                        confirmButton,
+                        declineButton
+                    );
+
+                    reservationsList.appendChild(card);
+
+                });
+
+
+            } catch (error) {
+
+                console.error("RESERVATIONS ERROR:", error);
+
+                reservationsList.textContent =
+                    "Could not load reservations: " + error.message;
+
+            }
+
+        }
+
+
+
+        // LOAD CUSTOMER ORDERS
+
+async function loadOrders() {
+
+    const ordersList = document.getElementById("ordersList");
+
+    ordersList.textContent = "Loading orders...";
+
+    try {
+
+        const snapshot = await getDocs(collection(db, "orders"));
+        const now = Date.now();
+const fortyEightHours = 48 * 60 * 60 * 1000;
+
+        ordersList.replaceChildren();
+
+        if (snapshot.empty) {
+            ordersList.textContent = "No orders yet.";
+            return;
+        }
+
+        snapshot.forEach(orderDocument => {
+
+            const order = orderDocument.data();
+            const orderDate = order.createdAt?.toDate
+    ? order.createdAt.toDate().getTime()
+    : new Date(order.createdAt).getTime();
+
+if (!Number.isFinite(orderDate) || now - orderDate >= fortyEightHours) {
+    return;
+}
+
+            const card = document.createElement("div");
+            card.className = "card";
+
+            const title = document.createElement("h3");
+            title.textContent = "Order ID: " + orderDocument.id;
+
+            const customer = document.createElement("p");
+            customer.textContent = "Customer: " + (order.customerName || "Not provided");
+
+            const phone = document.createElement("p");
+            phone.textContent = "Phone: " + (order.customerPhone || "Not provided");
+
+            const method = document.createElement("p");
+            method.textContent = "Receiving Method: " + (order.deliveryMethod || "Not specified");
+
+            const address = document.createElement("p");
+            address.textContent = "Address: " + (order.customerAddress || "Not required");
+
+            const pin = document.createElement("p");
+            pin.textContent = order.deliveryMethod === "Pickup"
+                ? "CUSTOMER PICKUP PIN: " + (order.pickupPIN || "Not generated")
+                : "Pickup PIN: Not required";
+
+            const food = document.createElement("div");
+            food.innerHTML = "<strong>Food Ordered:</strong>";
+
+            (order.items || []).forEach(item => {
+                const itemLine = document.createElement("p");
+                itemLine.textContent =
+                    item.name + " × " + item.quantity +
+                    " — ₦" + (item.price * item.quantity).toLocaleString("en-NG");
+
+                food.appendChild(itemLine);
+            });
+
+            const subtotal = document.createElement("p");
+subtotal.textContent = "Food Subtotal: ₦" +
+    (order.subtotal || 0).toLocaleString("en-NG");
+
+const deliveryFee = document.createElement("p");
+deliveryFee.textContent = "Delivery Fee: ₦" +
+    (order.deliveryFee || 0).toLocaleString("en-NG");
+
+const total = document.createElement("p");
+total.textContent = "Final Total: ₦" +
+    (order.total || 0).toLocaleString("en-NG");
+
+            const payment = document.createElement("p");
+            payment.textContent = "Payment: " + (order.paymentStatus || "Unknown");
+
+            const statusText = document.createElement("p");
+            statusText.textContent = "Order Status: " + (order.status || "Pending");
+
+            card.append(
+    title,
+    customer,
+    phone,
+    method,
+    address,
+    pin,
+    food,
+    subtotal,
+    deliveryFee,
+    total,
+    payment,
+    statusText
+);
+
+            // ADMIN APPROVES PAYMENT AFTER CHECKING THE BANK ACCOUNT
+
+            if (order.paymentStatus !== "Paid") {
+
+                const approveButton = document.createElement("button");
+                approveButton.textContent = "Approve Payment";
+
+                approveButton.addEventListener("click", async function() {
+
+                    const confirmPayment = confirm(
+                        "Have you confirmed that this payment entered the OPay account?"
+                    );
+
+                    if (!confirmPayment) return;
+
+                    try {
+
+                        await updateDoc(
+                            doc(db, "orders", orderDocument.id),
+                            {
+                                paymentStatus: "Paid",
+                                status: "Pending"
+                            }
+                        );
+
+                        alert("Payment approved!");
+
+                        await loadOrders();
+
+                    } catch (error) {
+                        console.error(error);
+                        alert("Payment approval failed: " + error.message);
+                    }
+
+                });
+
+                card.appendChild(approveButton);
+            }
+
+            // ADMIN UPDATES ORDER PROGRESS
+
+            const select = document.createElement("select");
+
+            const statusOptions = [
+                "Awaiting Payment",
+                "Pending",
+                "Preparing",
+                "Ready",
+                "On the Way",
+                "Delivered",
+                "Collected"
+            ];
+
+            statusOptions.forEach(status => {
+
+                const option = document.createElement("option");
+
+                option.value = status;
+                option.textContent = status;
+
+                if (status === (order.status || "Awaiting Payment")) {
+                    option.selected = true;
+                }
+
+                select.appendChild(option);
+
+            });
+
+            const updateButton = document.createElement("button");
+            updateButton.textContent = "Update Order Status";
+
+            updateButton.addEventListener("click", async function() {
+
+                if (order.paymentStatus !== "Paid") {
+                    alert("Approve the payment before updating the order.");
+                    return;
+                }
+
+                if (select.value === "Collected") {
+
+                    if (order.deliveryMethod !== "Pickup") {
+                        alert("Only pickup orders can be marked as collected.");
+                        return;
+                    }
+
+                    const enteredPIN = prompt("Enter the customer's 6-digit pickup PIN:");
+
+                    if (enteredPIN !== order.pickupPIN) {
+                        alert("Incorrect pickup PIN. Do not release the food.");
+                        return;
+                    }
+                }
+
+                try {
+
+                    await updateDoc(
+                        doc(db, "orders", orderDocument.id),
+                        {
+                            status: select.value
+                        }
+                    );
+
+                    alert("Order status updated successfully!");
+
+                    await loadOrders();
+
+                } catch (error) {
+                    console.error(error);
+                    alert("Could not update order status: " + error.message);
+                }
+
+            });
+
+            card.append(select, updateButton);
+
+            ordersList.appendChild(card);
+
+        });
+
+    } catch (error) {
+
+        console.error("ORDERS ERROR:", error);
+
+        ordersList.textContent =
+            "Could not load orders: " + error.message;
+
+    }
+
+}
+
+    </script>
+
+</body>
+
+</html>

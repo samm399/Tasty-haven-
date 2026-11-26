@@ -1,0 +1,279 @@
+\<!DOCTYPE html>
+
+\<html lang="en"> \<head>     \<meta charset="UTF-8">     \<meta name="viewport" content="width=device-width, initial-scale=1.0">     \<title>About Us | Tasty Haven  Restaurant\</title>
+
+```
+<style>
+
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+    font-family: Georgia, serif;
+    background:
+        linear-gradient(rgba(0,0,0,0.55), rgba(0,0,0,0.65)),
+        url("https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=1920");
+
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    color: white;
+}
+        
+    }
+
+    /* Navigation Bar */
+
+    header {
+    width: 100%;
+    background: #111;
+}
+
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 8%;
+    gap: 20px;
+}
+
+.logo {
+    color: #c9a44c;
+    font-size: 27px;
+    font-weight: bold;
+    letter-spacing: 3px;
+}
+
+.nav-links {
+    display: flex;
+    list-style: none;
+    gap: 25px;
+    align-items: center;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: white;
+    font-size: 15px;
+    white-space: nowrap;
+    transition: 0.3s;
+}
+
+.nav-links a:hover {
+    color: #c9a44c;
+}
+
+.nav-btn {
+    display: inline-block;
+    text-decoration: none;
+    background: #c9a44c;
+    color: #111;
+    padding: 12px 18px;
+    font-size: 14px;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+    /* Hero Section */
+
+    .hero {
+        height: 500px;
+        background: linear-gradient(rgba(224, 167, 10, 0.55), rgba(0, 0, 0, 0.55)),
+        url("images/hero.jpg");
+
+        background-size: cover;
+        background-position: center;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+    }
+
+    .hero-content p {
+        color: #c9a44c;
+        letter-spacing: 5px;
+        margin-bottom: 20px;
+    }
+
+    .hero-content h1 {
+        color: white;
+        font-size: 65px;
+        margin-bottom: 20px;
+    }
+
+    .hero-content span {
+        color: #e9980cbd;
+        font-size: 17px;
+    }
+
+    /* About Section */
+
+    .about {
+    display: flex;
+    align-items: center;
+    gap: 70px;
+    padding: 100px 10%;
+    background: linear-gradient(135deg, #e9980cbd, #080808);
+}
+    .about-image {
+    flex: 1;
+    min-width: 0;
+}
+
+.about-image img {
+    width: 100%;
+    height: 450px;
+    object-fit: cover;
+    border-radius: 10px;
+    display: block;
+}
+
+    .about-text {
+        flex: 1;
+    }
+
+    .subtitle {
+        color: #b18b36;
+        letter-spacing: 4px;
+        font-size: 14px;
+        margin-bottom: 20px;
+    }
+
+    .about-text h2 {
+        font-size: 42px;
+        line-height: 1.3;
+        margin-bottom: 25px;
+    }
+
+    .about-text p {
+        color: #666;
+        font-size: 16px;
+        line-height: 1.9;
+        margin-bottom: 20px;
+    }
+
+    .about-btn {
+        display: inline-block;
+        background: #171717;
+        color: white;
+        text-decoration: none;
+        padding: 15px 25px;
+        margin-top: 10px;
+        transition: 0.3s;
+    }
+
+    .about-btn:hover {
+        background: #c9a44c;
+        color: #111;
+    }
+
+    /* Mobile Responsive */
+
+    @media (max-width: 768px) {
+
+        .navbar {
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .nav-links {
+            gap: 15px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .hero-content h1 {
+            font-size: 42px;
+        }
+
+        .about {
+            flex-direction: column;
+            padding: 60px 7%;
+        }
+
+        .about-text h2 {
+            font-size: 32px;
+        }
+
+    }
+
+</style>
+```
+
+\</head>
+
+\<body>
+
+```
+<!-- Navigation Bar -->
+
+<header>
+    <nav class="navbar">
+
+        <div class="logo">TASTY HAVEN</div>
+
+        <ul class="nav-links">
+            <li><a href="home.html">Home</a></li>
+            <li><a href="about.html">About</a></li>
+            <li><a href="menu.html">Menu</a></li>
+            <li><a href="contact.html">Contact</a></li>
+        </ul>
+
+
+        <a href="menu.html" class="nav-btn">Explore Menu</a>
+
+    </nav>
+</header>
+
+<!-- Hero Section -->
+
+<section class="hero">
+
+    <div class="hero-content">
+
+        <p>WELCOME TO Tasty Haven</p>
+
+        <h1>Our Story,<br>Our Passion.</h1>
+
+        <span>
+            Where exceptional taste meets unforgettable experiences.
+        </span>
+
+    </div>
+
+</section>
+
+<!-- About Section -->
+
+<section class="about">
+
+    <div class="about-image">
+    <img
+        src="https://images.unsplash.com/photo-1665333048952-a3ee97714c6b?w=1200"
+        alt="Food served at Tasty Haven">
+</div>
+ 
+
+    <div class="about-text">
+   <p class="subtitle">OUR STORY</p>
+
+<h2>Bringing Elegance and Taste to Every Table</h2>
+
+<p>     Welcome to Tasty Haven, where passion for exceptional food meets     the art of fine dining. We believe that every meal should be     more than just food; it should be an unforgettable experience. </p>
+
+<p>     Our restaurant was built on a love for quality ingredients,     creative cooking and outstanding hospitality. Every dish is     carefully prepared by our talented chefs to deliver rich     flavours and beautiful presentation. </p>
+
+<p>     From intimate dinners to special celebrations, Tasty Haven     provides a welcoming atmosphere where great food, elegance     and memorable moments come together. </p>
+
+<a href="menu.html" class="about-btn">Discover Our Menu</a>
+
+    </div>
+
+</section>
+```
+
+\</body> \</html>

@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tasty Haven - Book a Table</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 30px 15px;
+            min-height: 100vh;
+            background: #101827;
+            color: white;
+            font-family: Arial, sans-serif;
+        }
+
+        .booking-container {
+            max-width: 500px;
+            margin: 30px auto;
+            padding: 30px;
+            background: #1c293b;
+            border: 1px solid #d4af37;
+            border-radius: 18px;
+        }
+
+        h1 {
+            color: #d4af37;
+            text-align: center;
+        }
+
+        p {
+            text-align: center;
+            color: #ccc;
+        }
+
+        label {
+            display: block;
+            margin-top: 18px;
+            margin-bottom: 7px;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 13px;
+            border: 1px solid #d4af37;
+            border-radius: 8px;
+            background: #101827;
+            color: white;
+            font-size: 15px;
+        }
+
+        button {
+            width: 100%;
+            margin-top: 25px;
+            padding: 15px;
+            border: none;
+            border-radius: 8px;
+            background: #d4af37;
+            color: #101827;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #f1cc55;
+        }
+
+        #message {
+            margin-top: 20px;
+            line-height: 1.6;
+            overflow-wrap: anywhere;
+        }
+
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+            color: #d4af37;
+            text-decoration: none;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="booking-container">
+
+        <h1>Book a Table</h1>
+
+        <p>Reserve your table at Tasty Haven.</p>
+
+        <form id="bookingForm">
+
+            <label>Full Name</label>
+            <input
+                type="text"
+                id="customerName"
+                required
+                placeholder="Enter your full name"
+            >
+
+            <label>Phone Number</label>
+            <input
+                type="tel"
+                id="customerPhone"
+                required
+                placeholder="Enter your phone number"
+            >
+
+            <label>Booking Date</label>
+            <input
+                type="date"
+                id="bookingDate"
+                required
+            >
+
+            <label>Booking Time</label>
+            <select id="bookingTime" required>
+                <option value="">Select a time</option>
+                <option>10:00 AM</option>
+                <option>11:00 AM</option>
+                <option>12:00 PM</option>
+                <option>1:00 PM</option>
+                <option>2:00 PM</option>
+                <option>3:00 PM</option>
+                <option>4:00 PM</option>
+                <option>5:00 PM</option>
+                <option>6:00 PM</option>
+                <option>7:00 PM</option>
+                <option>8:00 PM</option>
+                <option>9:00 PM</option>
+            </select>
+
+            <label>Number of Guests</label>
+            <select id="guests" required>
+                <option value="">Select guests</option>
+                <option value="1">1 Guest</option>
+                <option value="2">2 Guests</option>
+                <option value="3">3 Guests</option>
+                <option value="4">4 Guests</option>
+                <option value="5">5 Guests</option>
+                <option value="6">6 Guests</option>
+                <option value="7">7 Guests</option>
+                <option value="8">8 Guests</option>
+            </select>
+
+            <button type="submit" id="confirmButton">
+                Confirm Reservation
+            </button>
+
+        </form>
+
+        <div id="message"></div>
+
+        <a href="track.html" class="back-link">Track My Reservation</a>
+        
+        <a href="home.html" class="back-link">Back to Home</a>
+
+    </div>
+
+    <script type="module">
+
+        import { db, auth } from "./firebase.js";
+
+        import {
+            collection,
+            addDoc,
+            serverTimestamp
+        } from "https://www.gstatic.com/firebasejs/13.4.0/firebase-firestore.js";
+
+        import {
+            onAuthStateChanged
+        } from "https://www.gstatic.com/firebasejs/13.4.0/firebase-auth.js";
+
+        const form = document.getElementById("bookingForm");
+        const message = document.getElementById("message");
+        const button = document.getElementById("confirmButton");
+
+        const dateInput = document.getElementById("bookingDate");
+
+        const today = new Date();
+        const localDate = new Date(
+            today.getTime() - today.getTimezoneOffset() * 60000
+        ).toISOString().split("T")[0];
+
+        dateInput.min = localDate;
+
+        form.addEventListener("submit", async function(event) {
+
+            event.preventDefault();
+
+            const user = auth.currentUser;
+
+            if (!user || !user.emailVerified) {
+                message.textContent = "Please log in with your verified Gmail first.";
+                return;
+            }
+
+            const name = document.getElementById("customerName").value.trim();
+            const phone = document.getElementById("customerPhone").value.trim();
+            const date = dateInput.value;
+            const time = document.getElementById("bookingTime").value;
+            const guests = Number(document.getElementById("guests").value);
+
+            if (!name || !phone || !date || !time || !guests) {
+                message.textContent = "Please complete all fields.";
+                return;
+            }
+
+            if (date < localDate) {
+                message.textContent = "Please choose a future date.";
+                return;
+            }
+
+            button.disabled = true;
+            button.textContent = "Submitting...";
+
+            try {
+
+                const reservationRef = await addDoc(
+                    collection(db, "reservations"),
+                    {
+                        customerUid: user.uid,
+                        customerEmail: user.email,
+                        name: name,
+                        phone: phone,
+                        date: date,
+                        time: time,
+                        guests: guests,
+                        status: "Pending",
+                        createdAt: serverTimestamp()
+                    }
+                );
+
+                message.innerHTML =
+                    "<strong>Reservation submitted successfully!</strong><br>" +
+                    "Your booking code is: " + reservationRef.id +
+                    "<br>Status: Pending";
+
+                form.reset();
+
+            } catch (error) {
+
+                console.error(error);
+                message.textContent =
+                    "Reservation failed. Please try again.";
+
+            } finally {
+
+                button.disabled = false;
+                button.textContent = "Confirm Reservation";
+
+            }
+
+        });
+
+    </script>
+
+</body>
+</html>

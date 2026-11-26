@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tasty Haven | Tracking</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: Arial, sans-serif;
+            background: #151515;
+            color: white;
+        }
+
+        .tracking-container {
+            max-width: 650px;
+            margin: 40px auto;
+            padding: 30px 20px;
+            background: #222;
+            border: 1px solid #b8860b;
+            border-radius: 15px;
+            text-align: center;
+        }
+
+        h1, h2 {
+            color: #d4a017;
+        }
+
+        .subtitle {
+            color: #ccc;
+            margin-bottom: 30px;
+        }
+
+        .search-box {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+        }
+
+        input {
+            flex: 1;
+            min-width: 0;
+            padding: 14px;
+            border: 1px solid #b8860b;
+            border-radius: 8px;
+            background: #151515;
+            color: white;
+            outline: none;
+        }
+
+        button {
+            padding: 14px 20px;
+            border: none;
+            border-radius: 8px;
+            background: #d4a017;
+            color: #151515;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .tracking-section {
+            margin-top: 35px;
+            padding: 20px 10px;
+            border-top: 1px solid #555;
+        }
+
+        .progress-section {
+            margin-top: 35px;
+        }
+
+        .progress-track {
+            position: relative;
+            height: 8px;
+            margin: 55px 15px 25px;
+            background: #555;
+            border-radius: 20px;
+        }
+
+        .progress-fill {
+            width: 0%;
+            height: 100%;
+            background: #d6a84f;
+            border-radius: 20px;
+            transition: width 2s ease-in-out;
+        }
+
+        .motorcycle {
+            position: absolute;
+            left: 0%;
+            top: -42px;
+            font-size: 35px;
+            transform: translateX(-50%);
+            transition: left 2s ease-in-out;
+            z-index: 5;
+        }
+
+        .motorcycle.waiting {
+            animation: waitingMove 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes waitingMove {
+            from {
+                transform: translateX(-50%) translateX(0);
+            }
+
+            to {
+                transform: translateX(-50%) translateX(12px);
+            }
+        }
+
+        .steps {
+            display: flex;
+            justify-content: space-between;
+            gap: 5px;
+            color: #aaa;
+            font-size: 12px;
+        }
+
+        .step {
+            flex: 1;
+        }
+
+        .step-number {
+            display: block;
+            width: 25px;
+            height: 25px;
+            line-height: 25px;
+            margin: 0 auto 8px;
+            border-radius: 50%;
+            background: #555;
+            color: white;
+        }
+
+        .step.active .step-number {
+            background: #d4a017;
+            color: #151515;
+        }
+
+        .step.active {
+            color: #d4a017;
+        }
+
+        .tracking-result {
+            margin-top: 25px;
+            color: #d4a017;
+            line-height: 1.6;
+        }
+
+        @media (max-width: 450px) {
+            .search-box {
+                flex-direction: column;
+            }
+
+            .tracking-container {
+                padding: 25px 12px;
+            }
+
+            .steps {
+                font-size: 10px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="tracking-container">
+
+        <h1>Track Your Order</h1>
+
+        <p class="subtitle">
+            Follow your Tasty Haven food delivery.
+        </p>
+
+        <!-- FOOD ORDER TRACKING -->
+
+        <div class="tracking-section">
+
+            <h2>Food Delivery Tracking</h2>
+
+            <div class="search-box">
+                <input
+                    type="text"
+                    id="orderId"
+                    placeholder="Enter your Order ID"
+                >
+
+                <button id="trackButton">Track Order</button>
+            </div>
+
+            <div class="progress-section">
+
+                <h2>Delivery Progress</h2>
+
+                <div class="progress-track">
+
+                    <div class="progress-fill" id="progressFill"></div>
+
+                    <div class="motorcycle" id="motorcycle">
+                        🏍️
+                    </div>
+
+                </div>
+
+                <div class="steps">
+
+                    <div class="step">
+                        <span class="step-number">1</span>
+                        Placed
+                    </div>
+
+                    <div class="step">
+                        <span class="step-number">2</span>
+                        Preparing
+                    </div>
+
+                    <div class="step">
+                        <span class="step-number">3</span>
+                        Ready
+                    </div>
+
+                    <div class="step">
+                        <span class="step-number">4</span>
+                        On the Way
+                    </div>
+
+                    <div class="step">
+                        <span class="step-number">5</span>
+                        Delivered
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div id="trackingResult" class="tracking-result">
+                Enter your Order ID to check your order.
+            </div>
+
+        </div>
+
+
+        <!-- TABLE RESERVATION TRACKING -->
+
+        <div class="tracking-section">
+
+            <h2>Table Reservation Tracking</h2>
+
+            <p class="subtitle">
+                Check the status of your table reservation.
+            </p>
+
+            <div class="search-box">
+
+                <input
+                    type="text"
+                    id="bookingId"
+                    placeholder="Enter your Booking ID"
+                >
+
+                <button id="trackBookingButton">
+                    Track Booking
+                </button>
+
+            </div>
+
+                        <div id="bookingResult" class="tracking-result">
+                Enter your Booking ID to check your reservation.
+            </div>
+
+        </div>
+
+        <a href="home.html" style="
+            display: block;
+            margin-top: 30px;
+            color: #d4a017;
+            text-decoration: none;
+            font-weight: bold;
+        ">
+            ← Back to Home
+        </a>
+
+    </div>
+
+
+    <script type="module">
+
+        import { db, auth } from "./firebase.js";
+
+        import {
+            doc,
+            getDoc,
+            onSnapshot
+        } from "https://www.gstatic.com/firebasejs/13.4.0/firebase-firestore.js";
+
+
+        let stopOrderTracking = null;
+        let stopBookingTracking = null;
+
+
+        // CHECK CUSTOMER LOGIN
+
+        function getVerifiedCustomer() {
+
+            const user = auth.currentUser;
+
+            if (!user || !user.emailVerified) {
+                window.location.replace("welcome.html");
+                return null;
+            }
+
+            return user;
+        }
+
+
+        // FOOD ORDER TRACKING
+
+        const trackButton = document.getElementById("trackButton");
+
+        trackButton.addEventListener("click", async function() {
+
+            const user = getVerifiedCustomer();
+
+            if (!user) return;
+
+            const orderId = document.getElementById("orderId").value.trim();
+            const result = document.getElementById("trackingResult");
+
+            if (!orderId) {
+                result.textContent = "Please enter your Order ID.";
+                return;
+            }
+
+            result.textContent = "Searching for your order...";
+
+            if (stopOrderTracking) {
+                stopOrderTracking();
+                stopOrderTracking = null;
+            }
+
+            const orderRef = doc(db, "orders", orderId);
+
+            try {
+
+                const orderSnapshot = await getDoc(orderRef);
+
+                if (!orderSnapshot.exists()) {
+                    result.textContent = "Order not found. Please check your Order ID.";
+                    return;
+                }
+
+                const order = orderSnapshot.data();
+
+                if (order.customerUid !== user.uid) {
+                    result.textContent = "This order does not belong to your account.";
+                    return;
+                }
+
+                stopOrderTracking = onSnapshot(orderRef, function(snapshot) {
+
+                    if (!snapshot.exists()) return;
+
+                    const updatedOrder = snapshot.data();
+
+                    const status = updatedOrder.status || "Pending";
+                    const paymentStatus = updatedOrder.paymentStatus || "Awaiting Transfer";
+
+const paymentMessage = paymentStatus === "Paid"
+    ? "✅ Payment Approved"
+    : "⏳ Payment Pending";
+
+                    const messages = {
+                        "Pending": "📝 Your order has been received!",
+                        "Preparing": "👨‍🍳 Your delicious food is being prepared!",
+                        "Ready": "🥡 Your food is ready for pickup!",
+                        "On the Way": "🏍️ Your rider is bringing your food!",
+                        "Delivered": "🎉 Your order has been delivered. Enjoy your meal!"
+                    };
+
+                    result.innerHTML = `
+    <strong>${paymentMessage}</strong>
+    <br><br>
+    <strong>Order Status:</strong> ${status}
+    <br><br>
+    ${messages[status] || "Your order is being processed."}
+`;
+
+                    updateDeliveryProgress(status);
+
+                }, function(error) {
+                    console.error("Order tracking error:", error);
+                    result.textContent = "Unable to track your order.";
+                });
+
+            } catch (error) {
+
+                console.error("Tracking error:", error);
+
+                result.textContent = "Unable to track your order. Please try again.";
+
+            }
+
+        });
+
+
+        // UPDATE MOTORCYCLE ANIMATION
+
+        function updateDeliveryProgress(status) {
+
+            const stages = [
+                "Pending",
+                "Preparing",
+                "Ready",
+                "On the Way",
+                "Delivered"
+            ];
+
+            const progressFill = document.getElementById("progressFill");
+            const motorcycle = document.getElementById("motorcycle");
+            const steps = document.querySelectorAll(".steps .step");
+
+            motorcycle.classList.toggle("waiting", status === "Pending");
+
+            const index = stages.indexOf(status);
+
+            if (index === -1) return;
+
+            const percentage = index * 25;
+
+            progressFill.style.width = percentage + "%";
+            motorcycle.style.left = percentage + "%";
+
+            steps.forEach((step, stepIndex) => {
+                step.classList.toggle("active", stepIndex <= index);
+            });
+
+        }
+
+
+        // TABLE RESERVATION TRACKING
+
+        const trackBookingButton =
+            document.getElementById("trackBookingButton");
+
+        trackBookingButton.addEventListener("click", async function() {
+
+            const user = getVerifiedCustomer();
+
+            if (!user) return;
+
+            const bookingId = document.getElementById("bookingId").value.trim();
+
+            const result = document.getElementById("bookingResult");
+
+            if (!bookingId) {
+                result.textContent = "Please enter your Booking ID.";
+                return;
+            }
+
+            result.textContent = "Searching for your reservation...";
+
+            if (stopBookingTracking) {
+                stopBookingTracking();
+                stopBookingTracking = null;
+            }
+
+            const bookingRef = doc(db, "reservations", bookingId);
+
+            try {
+
+                const bookingSnapshot = await getDoc(bookingRef);
+
+                if (!bookingSnapshot.exists()) {
+                    result.textContent = "Reservation not found. Check your Booking ID.";
+                    return;
+                }
+
+                const booking = bookingSnapshot.data();
+
+                if (booking.customerUid !== user.uid) {
+                    result.textContent = "This reservation does not belong to your account.";
+                    return;
+                }
+
+                stopBookingTracking = onSnapshot(bookingRef, function(snapshot) {
+
+                    if (!snapshot.exists()) return;
+
+                    const reservation = snapshot.data();
+
+                    const status = reservation.status || "Pending";
+
+                    const messages = {
+                        "Pending": "⏳ Your table reservation is waiting for confirmation.",
+                        "Confirmed": "✅ Your table reservation has been confirmed!",
+                        "Declined": "❌ Sorry, your table reservation was declined.",
+                        "Completed": "🎉 Your reservation has been completed. Thank you for choosing Tasty Haven!"
+                    };
+
+                    result.innerHTML = `
+                        <strong>${messages[status] || "Your reservation is being processed."}</strong>
+                        <br><br>
+                        Booking ID: ${bookingId}
+                        <br>
+                        Date: ${reservation.date || "Not available"}
+                        <br>
+                        Time: ${reservation.time || "Not available"}
+                        <br>
+                        Guests: ${reservation.guests || "Not available"}
+                        <br>
+                        Status: ${status}
+                    `;
+
+                }, function(error) {
+
+                    console.error("Reservation tracking error:", error);
+
+                    result.textContent = "Unable to track your reservation.";
+
+                });
+
+            } catch (error) {
+
+                console.error("Booking tracking error:", error);
+
+                result.textContent = "Unable to track your reservation. Please try again.";
+
+            }
+
+        });
+
+    </script>
+
+
+    <script type="module">
+
+        import { auth } from "./firebase.js";
+
+        import {
+            onAuthStateChanged,
+            signOut
+        } from "https://www.gstatic.com/firebasejs/13.4.0/firebase-auth.js";
+
+        onAuthStateChanged(auth, async (user) => {
+
+            if (!user) {
+                window.location.replace("welcome.html");
+                return;
+            }
+
+            if (!user.emailVerified) {
+                await signOut(auth);
+                window.location.replace("welcome.html");
+            }
+
+        });
+
+    </script>
+
+</body>
+</html>

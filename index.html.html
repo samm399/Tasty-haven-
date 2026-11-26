@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Tasty Haven | Home</title>
+
+<style>
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+
+body {
+    margin: 0;
+
+    background-image:
+        linear-gradient(rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 0.35)),
+        url("https://basepic.com/FdTfmJBw/tasty-steak.gif.gif");
+
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+
+    color: white;
+    overflow-x: hidden;
+}
+
+/* NAVIGATION */
+
+header {
+    width: 90%;
+    margin: 15px auto;
+    padding: 15px 25px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: absolute;
+    top: 0;
+    left: 5%;
+    z-index: 10;
+    background: rgba(10, 5, 2, .88);
+    border: 1px solid rgba(255,255,255,.15);
+    border-radius: 30px;
+    backdrop-filter: blur(12px);
+}
+
+.logo {
+    font-size: 27px;
+    font-weight: bold;
+    color: #ff961c;
+    white-space: nowrap;
+}
+
+.logo span {
+    color: white;
+}
+
+nav {
+    display: flex;
+    gap: 30px;
+}
+
+nav a {
+    color: white;
+    text-decoration: none;
+    font-size: 15px;
+    font-weight: 600;
+    transition: .3s;
+}
+
+nav a:hover {
+    color: #ff961c;
+}
+
+.order-btn {
+    background: #6900a6;
+    color: white;
+    padding: 13px 22px;
+    border-radius: 30px;
+    text-decoration: none;
+    font-weight: bold;
+    transition: .3s;
+}
+
+.order-btn:hover {
+    background: #8700d4;
+}
+
+/* HERO SECTION */
+
+.hero {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    padding: 150px 6% 130px;
+
+    background:
+    linear-gradient(
+        90deg,
+        rgba(15,5,1,.78) 0%,
+        rgba(15,5,1,.55) 48%,
+        rgba(15,5,1,.20) 100%
+    ),
+    url("https://basepic.com/FdTfmJBw/tasty-steak.gif.gif");
+
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+
+    position: relative;
+    isolation: isolate;
+}
+
+/* WOODEN COUNTER */
+
+.hero::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 105px;
+    background:
+    linear-gradient(
+        180deg,
+        rgba(0,0,0,.1),
+        rgba(0,0,0,.15)
+    ),
+    repeating-linear-gradient(
+        0deg,
+        #54250f 0px,
+        #8c421b 12px,
+        #5c2b12 25px,
+        #a35422 38px
+    );
+    border-top: 5px solid #a75a26;
+    z-index: 1;
+}
+
+/* HERO TEXT */
+
+.hero-content {
+    max-width: 650px;
+    position: relative;
+    z-index: 3;
+}
+
+.small-text {
+    color: white;
+    font-family: cursive;
+    font-size: 35px;
+    margin-bottom: 5px;
+}
+
+.hero h1 {
+    font-size: 75px;
+    line-height: 1.05;
+    margin-bottom: 25px;
+    font-weight: 800;
+}
+
+.hero h1 span {
+    color: #ff9518;
+}
+
+.tagline {
+    font-size: 23px;
+    font-weight: bold;
+    margin-bottom: 18px;
+}
+
+.hero p {
+    font-size: 18px;
+    line-height: 1.7;
+    color: #eee2d7;
+    margin-bottom: 30px;
+    max-width: 580px;
+}
+
+/* BUTTON */
+
+.hero-buttons {
+    display: flex;
+    gap: 18px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.menu-btn {
+    background: linear-gradient(90deg, #ff7800, #ff9d16);
+    color: white;
+    text-decoration: none;
+    padding: 19px 32px;
+    border-radius: 40px;
+    font-size: 17px;
+    font-weight: bold;
+    transition: .3s;
+}
+
+.menu-btn:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 25px rgba(255,120,0,.3);
+}
+
+.about-btn {
+    color: white;
+    text-decoration: none;
+    border: 1px solid white;
+    padding: 17px 25px;
+    border-radius: 40px;
+}
+
+.bottom-text {
+    margin-top: 45px;
+    color: #e5c5a8;
+    font-size: 13px;
+    letter-spacing: 3px;
+}
+
+/* FOOD SLIDESHOW FRAME */
+
+.food-animation {
+    position: absolute;
+    right: 6%;
+    top: 48%;
+    transform: translateY(-50%);
+    width: 37%;
+    max-width: 580px;
+    height: 390px;
+    z-index: 3;
+    display: block;
+    overflow: hidden;
+    border: 6px solid #ff9415;
+    border-radius: 45px;
+    text-decoration: none;
+    background: #100600;
+    box-shadow: 0 15px 40px rgba(0,0,0,.5);
+}
+
+
+.food-circle {
+    position: relative;
+    width: 350px;
+    height: 350px;
+    margin: 50px auto;
+    transform-style: preserve-3d;
+    animation: foodSpin 18s linear infinite;
+}
+
+.food-item {
+    position: absolute;
+    width: 130px;
+    height: 130px;
+    top: 50%;
+    left: 50%;
+    margin-left: -65px;
+    margin-top: -65px;
+    border-radius: 20px;
+    overflow: hidden;
+    transform:
+        rotateY(calc(var(--i) * 72deg))
+        translateZ(190px);
+}
+
+.food-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    border-radius: 20px;
+}
+
+@keyframes foodSpin {
+    from {
+        transform: rotateY(0deg);
+    }
+
+    to {
+        transform: rotateY(360deg);
+    }
+}
+
+/* DECORATIVE VEGETABLES */
+
+.decoration {
+    position: absolute;
+    z-index: 2;
+    font-size: 55px;
+    pointer-events: none;
+}
+
+.tomato {
+    top: 18%;
+    left: 39%;
+}
+
+.leaf {
+    top: 55%;
+    left: 2%;
+}
+
+.pepper {
+    top: 15%;
+    right: 2%;
+}
+
+.vegetables {
+    position: absolute;
+    bottom: 15px;
+    left: 0;
+    font-size: 55px;
+    z-index: 3;
+    pointer-events: none;
+}
+
+/* TABLET */
+
+@media(max-width: 1000px) {
+
+    header {
+        width: 94%;
+        left: 3%;
+    }
+
+    nav {
+        gap: 15px;
+    }
+
+    .hero h1 {
+        font-size: 55px;
+    }
+
+    .food-animation {
+        width: 35%;
+        height: 300px;
+        right: 4%;
+    }
+
+    .hero-content {
+        max-width: 55%;
+    }
+
+}
+
+/* MOBILE */
+
+@media(max-width: 768px) {
+
+    header {
+        position: relative;
+        top: auto;
+        left: auto;
+        width: 94%;
+        margin: 10px auto;
+        padding: 15px;
+        flex-wrap: wrap;
+        gap: 18px;
+    }
+
+    .logo {
+        font-size: 23px;
+    }
+
+    nav {
+        width: 100%;
+        justify-content: center;
+        gap: 15px;
+        flex-wrap: wrap;
+    }
+
+    nav a {
+        font-size: 12px;
+    }
+
+    .order-btn {
+        display: none;
+    }
+
+    .hero {
+        min-height: auto;
+        padding: 65px 6% 130px;
+        flex-direction: column;
+        align-items: flex-start;
+        background-position: center;
+    }
+
+    .hero-content {
+        max-width: 100%;
+    }
+
+    .small-text {
+        font-size: 27px;
+    }
+
+    .hero h1 {
+        font-size: 45px;
+    }
+
+    .tagline {
+        font-size: 19px;
+    }
+
+    .hero p {
+        font-size: 15px;
+    }
+
+    .food-animation {
+        position: relative;
+        top: auto;
+        right: auto;
+        transform: none;
+        width: 100%;
+        max-width: 430px;
+        height: 280px;
+        margin: 45px auto 0;
+        border-radius: 25px;
+    }
+
+    .bottom-text {
+        font-size: 10px;
+        letter-spacing: 1px;
+    }
+
+    .decoration {
+        font-size: 30px;
+    }
+
+    .vegetables {
+        font-size: 35px;
+    }
+
+}
+
+@media(prefers-reduced-motion: reduce) {
+    .food-item {
+        animation: none;
+    }
+
+    .food-item:first-child {
+        opacity: 1;
+    }
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- NAVIGATION -->
+
+<header>
+
+    <div class="logo">
+        <span>Tasty</span> Haven
+    </div>
+
+<nav>
+    <a href="home.html">Home</a>
+    <a href="menu.html">Our Menu</a>
+    <a href="booking.html">Book a Table</a>
+    <a href="track.html">Track Order</a>
+    <a href="about us.html">About Us</a>
+</nav>
+    
+    <a href="menu.html" class="order-btn">
+        Order Now
+    </a>
+
+</header>
+
+
+<!-- HOMEPAGE -->
+
+<section class="hero">
+
+    <div class="hero-content">
+
+        <div class="small-text">
+            Welcome to
+        </div>
+
+        <h1>
+            Tasty <span>Haven</span>
+        </h1>
+
+        <div class="tagline">
+            Where every bite feels like Home
+        </div>
+
+        <p>
+            From jollof rice to grilled chicken, enjoy
+            delicious meals made with love and served
+            with care. Discover unforgettable flavours
+            at Delicious Bites.
+        </p>
+
+        <div class="hero-buttons">
+
+            <a href="menu.html" class="menu-btn">
+                🍴 Explore Our Menu →
+            </a>
+
+            <a href="about us.html" class="about-btn">
+    Learn More
+</a>
+
+        </div>
+
+        <div class="bottom-text">
+            FRESH FOOD • GREAT TASTE • HAPPY MOMENTS
+        </div>
+
+    </div>
+
+
+    <!-- FOOD SLIDESHOW -->
+
+    <a href="menu.html" class="food-animation">
+
+      
+<div class="food-circle">
+
+    <div class="food-item" style="--i:0">
+        <img src="https://images.unsplash.com/photo-1604382355076-af4b0eb60143?w=400" alt="Pizza">
+    </div>
+
+    <div class="food-item" style="--i:1">
+        <img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=400" alt="Burger">
+    </div>
+
+    <div class="food-item" style="--i:2">
+        <img src="https://images.unsplash.com/photo-1600891964599-f61ba0e24092?w=400" alt="Grilled food">
+    </div>
+
+    <div class="food-item" style="--i:3">
+        <img src="https://images.unsplash.com/photo-1513104890138-7c749659a591?w=400" alt="Pizza">
+    </div>
+
+    <div class="food-item" style="--i:4">
+        <img src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400" alt="Healthy food">
+    </div>
+
+</div>
+
+    </a>
+
+
+    <!-- DECORATIONS -->
+
+    <div class="decoration tomato">🍅</div>
+    <div class="decoration leaf">🥬</div>
+    <div class="decoration pepper">🌶️</div>
+
+    <div class="vegetables">
+        🍅 🥬 🧅
+    </div>
+
+</section>
+
+<script type="module">
+import { auth } from "./firebase.js";
+import {
+    onAuthStateChanged,
+    signOut
+} from "https://www.gstatic.com/firebasejs/13.4.0/firebase-auth.js";
+
+onAuthStateChanged(auth, async (user) => {
+
+    if (!user) {
+        window.location.replace("welcome.html");
+        return;
+    }
+
+    if (!user.emailVerified) {
+        await signOut(auth);
+        window.location.replace("welcome.html");
+    }
+
+});
+</script>
+
+</body>
+</html>
